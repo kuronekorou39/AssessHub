@@ -5,6 +5,7 @@ from app.models.investigation import Investigation
 from app.models.case import Case
 from app import db
 from datetime import datetime
+from app.utils.auth import admin_required
 
 investigations_bp = Blueprint('investigations', __name__)
 
@@ -53,16 +54,9 @@ def get_investigation(investigation_id):
 
 @investigations_bp.route('', methods=['POST'])
 @jwt_required()
+@admin_required()
 def create_investigation():
     """Create a new investigation (admin only)"""
-    current_user_id = get_jwt_identity()
-    current_user = User.query.get(current_user_id)
-    
-    if not current_user or not current_user.is_admin():
-        return jsonify({
-            'message': '管理者権限が必要です。',
-            'status': 'error'
-        }), 403
     
     data = request.get_json()
     
@@ -119,16 +113,9 @@ def create_investigation():
 
 @investigations_bp.route('/<int:investigation_id>', methods=['PUT'])
 @jwt_required()
+@admin_required()
 def update_investigation(investigation_id):
     """Update an investigation (admin only)"""
-    current_user_id = get_jwt_identity()
-    current_user = User.query.get(current_user_id)
-    
-    if not current_user or not current_user.is_admin():
-        return jsonify({
-            'message': '管理者権限が必要です。',
-            'status': 'error'
-        }), 403
     
     investigation = Investigation.query.get(investigation_id)
     
@@ -190,16 +177,9 @@ def update_investigation(investigation_id):
 
 @investigations_bp.route('/<int:investigation_id>', methods=['DELETE'])
 @jwt_required()
+@admin_required()
 def delete_investigation(investigation_id):
     """Delete an investigation (admin only)"""
-    current_user_id = get_jwt_identity()
-    current_user = User.query.get(current_user_id)
-    
-    if not current_user or not current_user.is_admin():
-        return jsonify({
-            'message': '管理者権限が必要です。',
-            'status': 'error'
-        }), 403
     
     investigation = Investigation.query.get(investigation_id)
     

@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models.user import User
 from app.models.case import Case
 from app import db
+from app.utils.auth import admin_required
 
 cases_bp = Blueprint('cases', __name__)
 
@@ -51,17 +52,9 @@ def get_case(case_id):
 
 @cases_bp.route('', methods=['POST'])
 @jwt_required()
+@admin_required()
 def create_case():
     """Create a new case (admin only)"""
-    current_user_id = get_jwt_identity()
-    current_user = User.query.get(current_user_id)
-    
-    if not current_user or not current_user.is_admin():
-        return jsonify({
-            'message': '管理者権限が必要です。',
-            'status': 'error'
-        }), 403
-    
     data = request.get_json()
     
     if not data or not data.get('name'):
@@ -87,17 +80,9 @@ def create_case():
 
 @cases_bp.route('/<int:case_id>', methods=['PUT'])
 @jwt_required()
+@admin_required()
 def update_case(case_id):
     """Update a case (admin only)"""
-    current_user_id = get_jwt_identity()
-    current_user = User.query.get(current_user_id)
-    
-    if not current_user or not current_user.is_admin():
-        return jsonify({
-            'message': '管理者権限が必要です。',
-            'status': 'error'
-        }), 403
-    
     case = Case.query.get(case_id)
     
     if not case:
@@ -125,17 +110,9 @@ def update_case(case_id):
 
 @cases_bp.route('/<int:case_id>', methods=['DELETE'])
 @jwt_required()
+@admin_required()
 def delete_case(case_id):
     """Delete a case (admin only)"""
-    current_user_id = get_jwt_identity()
-    current_user = User.query.get(current_user_id)
-    
-    if not current_user or not current_user.is_admin():
-        return jsonify({
-            'message': '管理者権限が必要です。',
-            'status': 'error'
-        }), 403
-    
     case = Case.query.get(case_id)
     
     if not case:

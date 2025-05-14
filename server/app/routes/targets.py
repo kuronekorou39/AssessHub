@@ -4,6 +4,7 @@ from app.models.user import User
 from app.models.target import Target
 from app.models.investigation import Investigation
 from app import db
+from app.utils.auth import admin_required
 
 targets_bp = Blueprint('targets', __name__)
 
@@ -52,16 +53,9 @@ def get_target(target_id):
 
 @targets_bp.route('', methods=['POST'])
 @jwt_required()
+@admin_required()
 def create_target():
     """Create a new target (admin only)"""
-    current_user_id = get_jwt_identity()
-    current_user = User.query.get(current_user_id)
-    
-    if not current_user or not current_user.is_admin():
-        return jsonify({
-            'message': '管理者権限が必要です。',
-            'status': 'error'
-        }), 403
     
     data = request.get_json()
     
@@ -97,16 +91,9 @@ def create_target():
 
 @targets_bp.route('/<int:target_id>', methods=['PUT'])
 @jwt_required()
+@admin_required()
 def update_target(target_id):
     """Update a target (admin only)"""
-    current_user_id = get_jwt_identity()
-    current_user = User.query.get(current_user_id)
-    
-    if not current_user or not current_user.is_admin():
-        return jsonify({
-            'message': '管理者権限が必要です。',
-            'status': 'error'
-        }), 403
     
     target = Target.query.get(target_id)
     
@@ -145,16 +132,9 @@ def update_target(target_id):
 
 @targets_bp.route('/<int:target_id>', methods=['DELETE'])
 @jwt_required()
+@admin_required()
 def delete_target(target_id):
     """Delete a target (admin only)"""
-    current_user_id = get_jwt_identity()
-    current_user = User.query.get(current_user_id)
-    
-    if not current_user or not current_user.is_admin():
-        return jsonify({
-            'message': '管理者権限が必要です。',
-            'status': 'error'
-        }), 403
     
     target = Target.query.get(target_id)
     

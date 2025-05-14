@@ -4,6 +4,7 @@ from app.models.user import User
 from app.models.customer import Customer
 from app.models.case import Case
 from app import db
+from app.utils.auth import admin_required
 
 customers_bp = Blueprint('customers', __name__)
 
@@ -52,17 +53,9 @@ def get_customer(customer_id):
 
 @customers_bp.route('', methods=['POST'])
 @jwt_required()
+@admin_required()
 def create_customer():
     """Create a new customer (admin only)"""
-    current_user_id = get_jwt_identity()
-    current_user = User.query.get(current_user_id)
-    
-    if not current_user or not current_user.is_admin():
-        return jsonify({
-            'message': '管理者権限が必要です。',
-            'status': 'error'
-        }), 403
-    
     data = request.get_json()
     
     if not data or not data.get('name') or not data.get('case_id'):
@@ -97,17 +90,9 @@ def create_customer():
 
 @customers_bp.route('/<int:customer_id>', methods=['PUT'])
 @jwt_required()
+@admin_required()
 def update_customer(customer_id):
     """Update a customer (admin only)"""
-    current_user_id = get_jwt_identity()
-    current_user = User.query.get(current_user_id)
-    
-    if not current_user or not current_user.is_admin():
-        return jsonify({
-            'message': '管理者権限が必要です。',
-            'status': 'error'
-        }), 403
-    
     customer = Customer.query.get(customer_id)
     
     if not customer:
@@ -145,17 +130,9 @@ def update_customer(customer_id):
 
 @customers_bp.route('/<int:customer_id>', methods=['DELETE'])
 @jwt_required()
+@admin_required()
 def delete_customer(customer_id):
     """Delete a customer (admin only)"""
-    current_user_id = get_jwt_identity()
-    current_user = User.query.get(current_user_id)
-    
-    if not current_user or not current_user.is_admin():
-        return jsonify({
-            'message': '管理者権限が必要です。',
-            'status': 'error'
-        }), 403
-    
     customer = Customer.query.get(customer_id)
     
     if not customer:
