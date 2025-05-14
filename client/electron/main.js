@@ -8,16 +8,17 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    icon: path.join(__dirname, '../public/icon.ico'),
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
+      nodeIntegration: false,
+      contextIsolation: true,
       preload: path.join(__dirname, 'preload.js')
     }
   });
 
-  const startUrl = isDev
+  const startUrl = process.env.ELECTRON_START_URL || (isDev
     ? 'http://localhost:3000'
-    : `file://${path.join(__dirname, '../dist/index.html')}`;
+    : `file://${path.join(__dirname, '../dist/index.html').replace(/\\/g, '/')}`);
   
   mainWindow.loadURL(startUrl);
 
