@@ -1,0 +1,14 @@
+FROM node:20-slim
+
+WORKDIR /app
+
+COPY client/package.json client/pnpm-lock.json* ./
+
+RUN npm install -g pnpm && pnpm install
+
+COPY client/ .
+
+# For development, we'll use Vite's dev server
+EXPOSE 3000
+
+CMD ["pnpm", "dev", "--host", "0.0.0.0"]
