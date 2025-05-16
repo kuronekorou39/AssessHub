@@ -1,16 +1,32 @@
 import os
+import time
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from dotenv import load_dotenv
+from sqlalchemy.exc import OperationalError
 
 load_dotenv()
 
 db = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
+
+
+# def wait_for_db(app, db):
+#     for i in range(10):
+#         try:
+#             with app.app_context():
+#                 db.session.execute("SELECT 1")
+#             print("✅ Database is ready.")
+#             return
+#         except OperationalError:
+#             print(f"⏳ Waiting for database... ({i+1}/10)")
+#             time.sleep(1)
+#     print("❌ Could not connect to the database.")
+#     # exit(1)
 
 def create_app():
     """Application factory function"""
@@ -27,7 +43,7 @@ def create_app():
     jwt.init_app(app)
     
     CORS(app, resources={r"/api/*": {"origins": "*"}})
-    
+
     from app.routes.auth import auth_bp
     from app.routes.cases import cases_bp
     from app.routes.customers import customers_bp
@@ -42,7 +58,10 @@ def create_app():
     app.register_blueprint(targets_bp, url_prefix='/api/targets')
     app.register_blueprint(search_bp, url_prefix='/api/search')
     
-    with app.app_context():
-        db.create_all()
-    
+    # wait_for_db(app, db)  # ← ここでDB接続を待つ
+
+    # ✅ DB作成はここで行う（wait_for_db成功後に）
+    # with app.app_context():
+    #     db.create_all()
+        
     return app

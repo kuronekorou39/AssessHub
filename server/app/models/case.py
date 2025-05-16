@@ -6,9 +6,9 @@ class Case(db.Model):
     __tablename__ = 'cases'
     
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), nullable=True) # TODO
     description = db.Column(db.Text)
-    status = db.Column(db.String(20), nullable=False, default='open')
+    status = db.Column(db.String(20), nullable=True, default='open') # TODO
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     

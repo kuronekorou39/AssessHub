@@ -5,6 +5,7 @@
   "main": "electron/main.js",
   "scripts": {
     "start": "vite",
+    "dev": "vite",
     "build": "vite build",
     "electron:dev": "concurrently \"npm run start\" \"electron .\"",
     "electron:build": "npm run build && electron-builder",

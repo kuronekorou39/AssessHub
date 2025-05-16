@@ -6,8 +6,8 @@ class Customer(db.Model):
     __tablename__ = 'customers'
     
     id = db.Column(db.Integer, primary_key=True)
-    case_id = db.Column(db.Integer, db.ForeignKey('cases.id'), nullable=False)
-    name = db.Column(db.String(100), nullable=False)
+    case_id = db.Column(db.Integer, db.ForeignKey('cases.id'), nullable=True) # TODO
+    name = db.Column(db.String(100), nullable=True) # TODO
     email = db.Column(db.String(120))
     phone = db.Column(db.String(20))
     address = db.Column(db.Text)

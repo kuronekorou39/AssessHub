@@ -24,7 +24,7 @@ def login():
             'status': 'error'
         }), 401
     
-    access_token = create_access_token(identity=user.id)
+    access_token = create_access_token(identity=str(user.id))
     
     return jsonify({
         'message': 'ログインに成功しました。',

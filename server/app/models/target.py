@@ -6,11 +6,11 @@ class Target(db.Model):
     __tablename__ = 'targets'
     
     id = db.Column(db.Integer, primary_key=True)
-    investigation_id = db.Column(db.Integer, db.ForeignKey('investigations.id'), nullable=False)
-    name = db.Column(db.String(100), nullable=False)
+    investigation_id = db.Column(db.Integer, db.ForeignKey('investigations.id'), nullable=True) # TODO
+    name = db.Column(db.String(100), nullable=True) # TODO
     type = db.Column(db.String(50))
     details = db.Column(db.Text)
-    status = db.Column(db.String(20), nullable=False, default='open')
+    status = db.Column(db.String(20), nullable=True, default='open') # TODO
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     

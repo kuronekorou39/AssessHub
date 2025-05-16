@@ -11,26 +11,36 @@ cases_bp = Blueprint('cases', __name__)
 @jwt_required()
 def get_cases():
     """Get all cases"""
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
-    
-    cases_pagination = Case.query.paginate(page=page, per_page=per_page)
-    
-    cases_data = [case.to_dict() for case in cases_pagination.items]
-    
-    return jsonify({
-        'message': 'ケース一覧を取得しました。',
-        'status': 'success',
-        'cases': cases_data,
-        'pagination': {
-            'total': cases_pagination.total,
-            'pages': cases_pagination.pages,
-            'page': page,
-            'per_page': per_page,
-            'has_next': cases_pagination.has_next,
-            'has_prev': cases_pagination.has_prev
-        }
-    }), 200
+    try:
+        page = request.args.get("page", default=1, type=int)
+        per_page = request.args.get("per_page", default=10, type=int)
+
+        if not page or page < 1:
+            page = 1
+        if not per_page or per_page < 1:
+            per_page = 10
+
+        cases = Case.query.paginate(page=page, per_page=per_page)
+
+        cases_data = [case.to_dict() for case in cases.items]
+        
+        return jsonify({
+            'message': 'ケース一覧を取得しました。',
+            'status': 'success',
+            'cases': cases_data,
+            'pagination': {
+                'total': cases.total,
+                'pages': cases.pages,
+                'page': page,
+                'per_page': per_page,
+                'has_next': cases.has_next,
+                'has_prev': cases.has_prev
+            }
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
 
 @cases_bp.route('/<int:case_id>', methods=['GET'])
 @jwt_required()
